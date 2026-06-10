@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathSuccess APC</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --pi-violet: #5B2D8E;
+    --pi-violet-light: #7B4DBE;
+    --pi-violet-pale: #F0E8FA;
+    --pi-gold: #F5A623;
+    --pi-gold-light: #FDE8B8;
+    --white: #FFFFFF;
+    --gray-soft: #F7F4FB;
+    --gray-text: #4A4060;
+    --gray-muted: #9B8EAF;
+    --success: #2E7D32;
+    --radius: 14px;
+    --shadow: 0 4px 20px rgba(91,45,142,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--gray-soft);
+    color: var(--gray-text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--pi-violet) 0%, var(--pi-violet-light) 100%);
+    padding: 20px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 12px rgba(91,45,142,0.25);
+  }
+
+  .header-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--white);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+
+  .header-text p {
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .pi-badge {
+    margin-left: auto;
+    background: var(--pi-gold);
+    color: var(--pi-violet);
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  .main { padding: 20px 16px 40px; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--pi-violet);
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  /* CLASSE TABS */
+  .classe-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .classe-scroll::-webkit-scrollbar { display: none; }
+
+  .classe-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--pi-violet-pale);
+    background: var(--white);
+    color: var(--gray-muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .classe-btn.active {
+    background: var(--pi-violet);
+    border-color: var(--pi-violet);
+    color: var(--white);
+    box-shadow: 0 3px 10px rgba(91,45,142,0.3);
+  }
+
+  /* CHAPITRE SELECT */
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap select {
+    width: 100%;
+    padding: 13px 40px 13px 16px;
+    border-radius: var(--radius);
+    border: 2px solid var(--pi-violet-pale);
+    background: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-text);
+    appearance: none;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s;
+  }
+
+  .select-wrap select:focus {
+    outline: none;
+    border-color: var(--pi-violet);
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--pi-violet);
+    pointer-events: none;
+    font-size: 16px;
+  }
+
+  /* TYPE BUTTONS */
+  .type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .type-btn {
+    padding: 14px 10px;
+    border-radius: var(--radius);
+    border: 2px solid var(--pi-violet-pale);
+    background: var(--white);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gray-text);
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .type-btn .type-icon { font-size: 24px; }
+
+  .type-btn.active {
+    background: var(--pi-violet-pale);
+    border-color: var(--pi-violet);
+    color: var(--pi-violet);
+  }
+
+  /* DIFFICULTE */
+  .diff-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .diff-btn {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 10px;
+    border: 2px solid var(--pi-violet-pale);
+    background: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--gray-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .diff-btn.active {
+    border-color: var(--pi-gold);
+    background: var(--pi-gold-light);
+    color: #7A4F00;
+  }
+
+  /* GENERATE BUTTON */
+  .btn-generate {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, var(--pi-violet) 0%, var(--pi-violet-light) 100%);
+    color: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 24px;
+    box-shadow: 0 6px 20px rgba(91,45,142,0.35);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  .btn-generate:active { transform: scale(0.98); }
+  .btn-generate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* RESULT CARD */
+  .result-card {
+    margin-top: 24px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: none;
+  }
+
+  .result-card.visible { display: block; }
+
+  .result-header {
+    background: linear-gradient(135deg, var(--pi-violet) 0%, var(--pi-violet-light) 100%);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .result-header-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .result-tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .result-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--white);
+    margin-top: 2px;
+  }
+
+  .result-copy {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .result-copy:active { background: rgba(255,255,255,0.35); }
+
+  .result-body {
+    padding: 18px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--gray-text);
+    white-space: pre-wrap;
+  }
+
+  /* LOADING */
+  .loading-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 32px 20px;
+    margin-top: 20px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .loading-wrap.visible { display: flex; }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--pi-violet-pale);
+    border-top-color: var(--pi-violet);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-muted);
+    text-align: center;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--success);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    color: var(--gray-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding-bottom: 8px;
+  }
+
+  .footer span { color: var(--pi-violet); }
+</style>
+</head>
+<body>
+
+<div id="piLoginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;text-align:center;background:linear-gradient(135deg,#5B2D8E,#7B4DBE);">
+  <div style="font-size:64px;margin-bottom:20px;">📐</div>
+  <h1 style="color:white;font-size:26px;font-weight:800;margin-bottom:8px;">MathSuccess</h1>
+  <p style="color:rgba(255,255,255,0.8);font-size:14px;margin-bottom:32px;">APC · MESFPT Burkina Faso</p>
+  <button onclick="initPi()" style="background:#F5A623;border:none;border-radius:14px;padding:16px 40px;color:#5B2D8E;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);">
+    π  Se connecter avec Pi
+  </button>
+  <p style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:20px;">Connexion requise pour accéder à l'app</p>
+</div>
+
+<div id="appMain" style="display:none;">
+
+<div class="header">
+  <div class="header-logo">📐</div>
+  <div class="header-text">
+    <h1>MathSuccess</h1>
+    <p>APC · MESFPT BURKINA FASO</p>
+  </div>
+  <div class="pi-badge" title="Connecté Pi">π</div>
+</div>
+
+<div class="main">
+
+  <!-- CLASSE -->
+  <div class="section-label">Classe</div>
+  <div class="classe-scroll" id="classeScroll">
+    <button class="classe-btn" onclick="selectClasse('6ème')">6ème</button>
+    <button class="classe-btn" onclick="selectClasse('5ème')">5ème</button>
+    <button class="classe-btn" onclick="selectClasse('4ème')">4ème</button>
+    <button class="classe-btn" onclick="selectClasse('3ème')">3ème</button>
+    <button class="classe-btn" onclick="selectClasse('2nde')">2nde</button>
+    <button class="classe-btn" onclick="selectClasse('1ère')">1ère</button>
+    <button class="classe-btn" onclick="selectClasse('Tle')">Tle</button>
+  </div>
+
+  <!-- CHAPITRE -->
+  <div class="section-label">Chapitre</div>
+  <div class="select-wrap">
+    <select id="chapitreSelect">
+      <option value="">— Sélectionner une classe d'abord —</option>
+    </select>
+    <span class="select-arrow">▾</span>
+  </div>
+
+  <!-- TYPE -->
+  <div class="section-label">Type d'activité</div>
+  <div class="type-grid">
+    <button class="type-btn active" id="typeExercice" onclick="selectType('exercice')">
+      <span class="type-icon">✏️</span>
+      Exercice APC
+    </button>
+    <button class="type-btn" id="typeSituation" onclick="selectType('situation')">
+      <span class="type-icon">🌍</span>
+      Situation d'intégration
+    </button>
+  </div>
+
+  <!-- DIFFICULTE -->
+  <div class="section-label">Difficulté</div>
+  <div class="diff-row">
+    <button class="diff-btn active" id="diff1" onclick="selectDiff('Facile')">⭐ Facile</button>
+    <button class="diff-btn" id="diff2" onclick="selectDiff('Moyen')">⭐⭐ Moyen</button>
+    <button class="diff-btn" id="diff3" onclick="selectDiff('Difficile')">⭐⭐⭐ Difficile</button>
+  </div>
+
+  <!-- BOUTON -->
+  <button class="btn-generate" id="btnGenerate" onclick="generer()">
+    ✨ Générer l'exercice
+  </button>
+
+  <!-- LOADING -->
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="spinner"></div>
+    <div class="loading-text">Génération en cours…<br>Veuillez patienter</div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-header-left">
+        <span class="result-tag" id="resultTag">Exercice APC</span>
+        <span class="result-title" id="resultTitle">6ème — Arithmétique</span>
+      </div>
+      <button class="result-copy" onclick="copier()">📋 Copier</button>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+  </div>
+
+  <div class="footer">
+    Propulsé par <span>MathSuccess</span> · Burkina Faso 🇧🇫
+  </div>
+
+</div>
+
+<div class="toast" id="toast">✅ Copié !</div>
+
+<script>
+// ===================== PI SDK =====================
+let piUser = null;
+
+function onIncompletePaymentFound(payment) {
+  // Gérer les paiements incomplets (obligatoire par Pi)
+  console.log('Paiement incomplet trouvé:', payment);
+}
+
+async function initPi() {
+  try {
+    Pi.init({ version: "2.0", sandbox: false });
+    const auth = await Pi.authenticate(['username'], onIncompletePaymentFound);
+    piUser = auth.user;
+    document.getElementById('piLoginScreen').style.display = 'none';
+    document.getElementById('appMain').style.display = 'block';
+    if (piUser?.username) {
+      document.getElementById('piUsername').textContent = piUser.username;
+    }
+  } catch(e) {
+    console.log('Erreur Pi auth:', e);
+    // Permettre l'accès même sans auth en sandbox
+    document.getElementById('piLoginScreen').style.display = 'none';
+    document.getElementById('appMain').style.display = 'block';
+  }
+}
+
+// ===================== DONNÉES CHAPITRES =====================
+const chapitres = {
+  '6ème': [
+    'Nombres entiers naturels',
+    'Numération et opérations',
+    'Fractions',
+    'Géométrie : droites et angles',
+    'Périmètres et aires',
+    'Proportionnalité',
+    'Statistiques élémentaires'
+  ],
+  '5ème': [
+    'Nombres entiers et décimaux',
+    'Fractions et opérations',
+    'Rapports et proportions',
+    'Géométrie plane',
+    'Triangles et constructions',
+    'Symétries',
+    'Grandeurs et mesures'
+  ],
+  '4ème': [
+    'Nombres relatifs',
+    'Calcul littéral',
+    'Équations du 1er degré',
+    'Géométrie : quadrilatères',
+    'Théorème de Pythagore',
+    'Statistiques et probabilités',
+    'Proportionnalité avancée'
+  ],
+  '3ème': [
+    'Calcul algébrique',
+    'Équations et inéquations',
+    'Systèmes d\'équations',
+    'Fonctions linéaires',
+    'Géométrie dans l\'espace',
+    'Théorème de Thalès',
+    'Trigonométrie',
+    'Statistiques'
+  ],
+  '2nde': [
+    'Ensembles et logique',
+    'Fonctions et représentations',
+    'Équations et inéquations',
+    'Géométrie analytique',
+    'Vecteurs',
+    'Statistiques et probabilités',
+    'Suites numériques',
+    'Trigonométrie'
+  ],
+  '1ère': [
+    'Polynômes et équations',
+    'Fonctions : limites et continuité',
+    'Dérivation',
+    'Suites arithmétiques et géométriques',
+    'Géométrie dans l\'espace',
+    'Probabilités',
+    'Statistiques inférentielles',
+    'Nombres complexes (introduction)'
+  ],
+  'Tle': [
+    'Limites et continuité',
+    'Dérivation et applications',
+    'Intégration',
+    'Équations différentielles',
+    'Suites et séries',
+    'Probabilités avancées',
+    'Géométrie analytique avancée',
+    'Nombres complexes',
+    'Combinatoire et dénombrement'
+  ]
+};
+
+// ===================== ÉTAT =====================
+let classeActive = '';
+let typeActif = 'exercice';
+let difficulteActive = 'Facile';
+
+// ===================== FONCTIONS UI =====================
+function selectClasse(classe) {
+  classeActive = classe;
+  document.querySelectorAll('.classe-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const sel = document.getElementById('chapitreSelect');
+  sel.innerHTML = '<option value="">— Choisir un chapitre —</option>';
+  chapitres[classe].forEach(ch => {
+    const opt = document.createElement('option');
+    opt.value = ch;
+    opt.textContent = ch;
+    sel.appendChild(opt);
+  });
+}
+
+function selectType(type) {
+  typeActif = type;
+  document.getElementById('typeExercice').classList.toggle('active', type === 'exercice');
+  document.getElementById('typeSituation').classList.toggle('active', type === 'situation');
+}
+
+function selectDiff(diff) {
+  difficulteActive = diff;
+  ['diff1','diff2','diff3'].forEach(id => document.getElementById(id).classList.remove('active'));
+  const map = {'Facile':'diff1','Moyen':'diff2','Difficile':'diff3'};
+  document.getElementById(map[diff]).classList.add('active');
+}
+
+// ===================== GÉNÉRATION IA =====================
+async function generer() {
+  const chapitre = document.getElementById('chapitreSelect').value;
+
+  if (!classeActive) { alert('Veuillez choisir une classe.'); return; }
+  if (!chapitre) { alert('Veuillez choisir un chapitre.'); return; }
+
+  const btn = document.getElementById('btnGenerate');
+  btn.disabled = true;
+  document.getElementById('loadingWrap').classList.add('visible');
+  document.getElementById('resultCard').classList.remove('visible');
+
+  const typeLabel = typeActif === 'exercice' ? 'Exercice APC' : "Situation d'intégration";
+
+  const systemPrompt = `Tu es un expert en didactique des mathématiques au Burkina Faso, spécialiste de l'Approche Par Compétences (APC) du MESFPT.
+
+Tes productions doivent :
+- Être rigoureusement conformes au curriculum officiel burkinabè
+- Suivre la structure APC : Contexte → Tâche → Ressources mobilisées → Compétences visées
+- Utiliser des contextes de vie réels au Burkina Faso (marché, agriculture, bâtiment, famille, santé…)
+- Être rédigées en français correct et accessible
+- Inclure un corrigé détaillé avec les étapes de résolution
+
+Pour une Situation d'intégration, inclure :
+1. La situation-problème (contexte réel burkinabè)
+2. Les consignes numérotées (3 à 4 tâches progressives)
+3. Les ressources nécessaires
+4. Le corrigé complet
+
+Pour un Exercice APC, inclure :
+1. L'énoncé structuré
+2. Les questions progressives (du plus simple au plus complexe)
+3. Le corrigé détaillé
+
+Réponds uniquement avec le contenu pédagogique, sans introduction ni commentaire.`;
+
+  const userPrompt = `Génère un ${typeLabel} de niveau ${difficulteActive} pour la classe de ${classeActive}, chapitre : "${chapitre}".`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    const data = await response.json();
+    const texte = data.content?.map(b => b.text || '').join('') || "Erreur lors de la génération.";
+
+    document.getElementById('resultTag').textContent = typeLabel + ' · ' + difficulteActive;
+    document.getElementById('resultTitle').textContent = classeActive + ' — ' + chapitre;
+    document.getElementById('resultBody').textContent = texte;
+    document.getElementById('resultCard').classList.add('visible');
+
+  } catch (e) {
+    document.getElementById('resultTag').textContent = 'Erreur';
+    document.getElementById('resultTitle').textContent = 'Problème de connexion';
+    document.getElementById('resultBody').textContent = "Impossible de générer l'exercice. Vérifiez votre connexion internet et réessayez.";
+    document.getElementById('resultCard').classList.add('visible');
+  }
+
+  document.getElementById('loadingWrap').classList.remove('visible');
+  btn.disabled = false;
+  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===================== COPIER =====================
+function copier() {
+  const texte = document.getElementById('resultBody').textContent;
+  navigator.clipboard.writeText(texte).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
+</script>
+</div><!-- fin appMain -->
+
+<script>
+// Lancer Pi auth au chargement
+window.addEventListener('load', initPi);
+</script>
+</body>
+</html>
