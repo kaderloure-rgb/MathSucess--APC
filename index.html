@@ -5,6 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MathSuccess APC</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+// Appel immédiat dès que le SDK est chargé
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    Pi.init({ version: "2.0", sandbox: false });
+    Pi.authenticate(['username'], function(payment) {
+      console.log('Paiement incomplet:', payment);
+    }).then(function(auth) {
+      window._piUser = auth.user;
+      var loginScreen = document.getElementById('piLoginScreen');
+      var appMain = document.getElementById('appMain');
+      if (loginScreen) loginScreen.style.display = 'none';
+      if (appMain) appMain.style.display = 'block';
+    }).catch(function(e) {
+      console.log('Pi auth erreur:', e);
+      var loginScreen = document.getElementById('piLoginScreen');
+      var appMain = document.getElementById('appMain');
+      if (loginScreen) loginScreen.style.display = 'none';
+      if (appMain) appMain.style.display = 'block';
+    });
+  } catch(e) {
+    console.log('Pi init erreur:', e);
+  }
+});
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
@@ -682,29 +707,4 @@ Réponds uniquement avec le contenu pédagogique, sans introduction ni commentai
     document.getElementById('resultTag').textContent = 'Erreur';
     document.getElementById('resultTitle').textContent = 'Problème de connexion';
     document.getElementById('resultBody').textContent = "Impossible de générer l'exercice. Vérifiez votre connexion internet et réessayez.";
-    document.getElementById('resultCard').classList.add('visible');
-  }
-
-  document.getElementById('loadingWrap').classList.remove('visible');
-  btn.disabled = false;
-  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ===================== COPIER =====================
-function copier() {
-  const texte = document.getElementById('resultBody').textContent;
-  navigator.clipboard.writeText(texte).then(() => {
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
-  });
-}
-</script>
-</div><!-- fin appMain -->
-
-<script>
-// Lancer Pi auth au chargement
-window.addEventListener('load', initPi);
-</script>
-</body>
-</html>
+    document.getElementById('resultCard').cla
