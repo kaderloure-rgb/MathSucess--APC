@@ -1,4 +1,4 @@
-index.html MathSuccess-APC
+MathSuccess-APC
 Excellent ! C'est exactement ce qu'il nous faut !
 
 **"Use External AI"** mentionne : Lovable, **Claude Code**, Cursor, Replit. Et un simple bouton **"Start"**.
